@@ -1,0 +1,85 @@
+{{- $clustername := .Values.cluster.name }}
+apiVersion: provisioning.cattle.io/v1
+kind: Cluster
+metadata:
+  {{- if .Values.cluster.labels }}
+  labels:
+{{ toYaml .Values.cluster.labels | indent 4 }}
+  {{- end }}
+  {{- if .Values.cluster.annotations }}
+  annotations:
+{{ toYaml .Values.cluster.annotations | indent 4 }}
+  {{- end }}
+  name: {{ .Values.cluster.name }}
+  namespace: fleet-default
+spec:
+  {{- if .Values.cloudCredentialSecretName }}
+  cloudCredentialSecretName: {{ .Values.cloudCredentialSecretName }}
+  {{- end }}
+  {{- if .Values.kubernetesVersion }}
+  kubernetesVersion: {{ .Values.kubernetesVersion }}
+  {{- end }}
+  rkeConfig:
+    machinePools:
+    {{- if .Values.nodepools }} {{ range $index, $nodepool := .Values.nodepools }}
+    - controlPlaneRole: {{ $nodepool.controlplane }}
+      etcdRole: {{ $nodepool.etcd }}
+      workerRole: {{ $nodepool.worker }}
+      quantity: {{ $nodepool.quantity }}
+      name: {{ $nodepool.name }}
+      machineConfigRef:
+        kind: NutanixConfig
+        name: {{ $clustername }}-{{ $nodepool.name }}
+      paused: false
+      displayName: {{ $nodepool.displayName }}
+      {{- if $nodepool.rollingUpdate }}
+      rollingUpdate:
+        maxUnavailable: {{ $nodepool.rollingUpdate.maxUnavailable }}
+        maxSurge: {{ $nodepool.rollingUpdate.maxSurge }}
+      {{- end }}
+      {{- if $nodepool.machineDeploymentLabels }}
+      machineDeploymentLabels:
+{{ toYaml $nodepool.machineDeploymentLabels | indent 8 }}
+      {{- end }}
+      {{- if $nodepool.machineDeploymentAnnotations }}
+      machineDeploymentAnnotations:
+{{ toYaml $nodepool.machineDeploymentAnnotations | indent 8 }}
+      {{- end }}
+      {{- end }}
+    {{- end }}
+    machineGlobalConfig:
+      disable:
+       - local-storage
+       - rke2-snapshot-validation-webhook
+       - rke2-snapshot-controller
+       - rke2-snapshot-controller-crd
+      cni: calico
+    {{- if .Values.rke.localClusterAuthEndpoint.enabled }}
+    localClusterAuthEndpoint:
+      enabled: {{ .Values.rke.localClusterAuthEndpoint.enabled }}
+      fqdn: {{ .Values.rke.localClusterAuthEndpoint.fqdn }}
+      caCerts: {{ .Values.rke.localClusterAuthEndpoint.caCerts }}
+    {{- end }}
+    upgradeStrategy:
+      controlPlaneDrainOptions:
+        enabled: false
+        # deleteEmptyDirData: false
+        # disableEviction: false
+        # gracePeriod: 0
+        # ignoreErrors: false
+        # skipWaitForDeleteTimeoutSeconds: 0
+        # timeout: 0
+      workerDrainOptions:
+        enabled: false
+        # deleteEmptyDirData: false
+        # disableEviction: false
+        # gracePeriod: 0
+        # ignoreErrors: false
+        # skipWaitForDeleteTimeoutSeconds: 0
+        # timeout: 0
+      workerConcurrency: "10%"
+      controlPlaneConcurrency: "10%"
+{{- if .Values.agentEnvs }}
+  agentEnvVars:
+{{ toYaml .Values.agentEnvs | indent 4 }}
+{{- end }}
