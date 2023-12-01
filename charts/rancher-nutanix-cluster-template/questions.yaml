@@ -1,0 +1,141 @@
+questions:
+## general
+- variable: cluster.name
+  default: rancher-on-nutanix-cluster
+  description: "Specify the name of the cluster"
+  label: "Cluster Name"
+  required: true
+  type: string
+  group: "General"
+- variable: cloudCredentialSecretName
+  default: "cattle-global-data:nutanix-pc-creds"
+  description: "CloudCredentialName for provisioning cluster"
+  label: "CloudCredential Name"
+  type: cloudcredential
+  group: "General"
+- variable: kubernetesDistro
+  default: rke2
+  description: "Specify Rancher Kubernetes Distribution Type"
+  label: "Rancher Kubernetes Distro"
+  type: enum
+  required: true
+  options:
+  - rke2
+  - k3s
+  group: "General"
+- variable: kubernetesVersion
+  default: v1.24.11+rke2r1
+  description: "Specify RKE2 Kubernetes version"
+  label: "RKE2 Kubernetes Version"
+  type: enum
+  show_if: kubernetesDistro=rke2
+  required: true
+  options:
+  - v1.25.7+rke2r1
+  - v1.24.11+rke2r1
+  - v1.23.17+rke2r1
+  group: "General"
+- variable: kubernetesVersion
+  default: v1.24.11+k3s1
+  description: "Specify K3s Kubernetes version"
+  label: "K3s Kubernetes Version"
+  type: enum
+  show_if: kubernetesDistro=k3s
+  required: true
+  options:
+  - v1.25.7+k3s1
+  - v1.24.11+k3s1
+  - v1.23.17+k3s1
+  group: "General"
+
+## global
+- variable: global.nodepools.cluster
+  label: "Cluster"
+  default: "PHX-SPOC020-1"
+  type: hostname
+  description: "Target Nutanix Prism Element / AHV Cluster"
+  required: true
+  group: "Global"
+- variable: global.nodepools.project
+  label: "Project"
+  default: "BootcampInfra"
+  type: string
+  description: "Nutanix Project where the virtual machine will be created"
+  group: "Global"
+- variable: global.nodepools.vmImage
+  label: "Image Name"
+  default: "ubuntu-22.04-server-cloudimg-amd64.img"
+  type: string
+  description: "Nutanix Machine Image Name"
+  group: "Global"
+- variable: global.nodepools.vmNetwork
+  label: "Network"
+  default: ["vlan2010"]
+  type: string
+  description: "Nutanix network where the virtual machine will be attached"
+  group: "Global"
+- variable: global.nodepools.cloudInit
+  label: "Cloud Init"
+  default: |-
+    #cloud-config
+    package_update: true
+    package_upgrade: true
+    packages:
+      - open-iscsi
+      - nfs-common
+    runcmd:
+      - systemctl stop ufw && systemctl disable ufw
+  type: multiline
+  description: "Cloud Init Configuration Yaml"
+  group: "Global"
+- variable: global.nodepools.vmCategories
+  label: "Nutanix Prism Categories"
+  default: ["AppType=Kubernetes"]
+  type: string
+  description: "Prism Categories to Assign VM, add more by editing yaml"
+  group: "Global"
+
+
+## nodepools
+- variable: nodepools.0.name
+  default:
+  description: "Specify Control Plane nodepool name"
+  type: string
+  label: "Control Plane Nodepool name"
+  required: true
+  group: "Nodepools"
+- variable: nodepools.0.quantity
+  default: 1
+  description: "Specify Control Plane node count"
+  type: int
+  required: true
+  label: "Control Plane Node count"
+  group: "Nodepools"
+- variable: nodepools.1.name
+  default:
+  description: "Specify Etcd nodepool name"
+  type: string
+  label: "Etcd Nodepool name"
+  required: true
+  group: "Nodepools"
+- variable: nodepools.1.quantity
+  default: 1
+  description: "Specify Etcd node count"
+  type: int
+  required: true
+  label: "Etcd Node count"
+  group: "Nodepools"
+- variable: nodepools.2.name
+  default:
+  description: "Specify Worker nodepool name"
+  type: string
+  label: "Worker Nodepool name"
+  required: true
+  group: "Nodepools"
+- variable: nodepools.2.quantity
+  default: 1
+  description: "Specify Worker node count"
+  type: int
+  required: true
+  label: "Worker Node count"
+  group: "Nodepools"

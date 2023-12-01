@@ -1,0 +1,8 @@
+apiVersion: v1
+name: rancher-nutanix-cluster-template
+description: Deploy RKE2 or K3s Clusters on Nutanix
+version: 0.1.0
+icon: https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Nutanix_Logo.svg/1024px-Nutanix_Logo.svg.png
+annotations:
+  catalog.cattle.io/type: cluster-template
+  catalog.cattle.io/namespace: fleet-default

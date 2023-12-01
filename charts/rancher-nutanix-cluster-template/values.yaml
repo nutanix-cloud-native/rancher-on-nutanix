@@ -1,0 +1,120 @@
+# Rancher cluster specific values
+cluster:
+  # specify Rancher cluster name
+  name: rancher-nutanix-cluster
+
+  # specify Rancher cluster labels
+  labels: {}
+
+  # specify Rancher cluster annotations
+  annotations: {}
+
+# specify cloud credential secret name
+cloudCredentialSecretName: "cattle-global-data:nutanix-pc-creds"
+
+# rke2 example
+kubernetesVersion: "v1.24.17+rke2r1"
+
+# k3s example
+# kubernetesVersion: v1.24.17+k3s1
+
+# general RKE options
+rke:
+  # enable local auth endpoint
+  # specify fqdn of local access endpoint
+  # fqdn: foo.bar.example
+  # specify cacert of local access endpoint
+  # caCerts: ""
+  localClusterAuthEndpoint:
+    enabled: false
+    caCerts: ""
+    fqdn: ""
+
+
+# global nutanix nodepool configs. These configs can be overriden within each nodepool.
+global:
+  nodepools:
+    cluster: PHX-SPOC020-1
+    project: BootcampInfra
+    vmImage: ubuntu-22.04-server-cloudimg-amd64.img
+    vmNetwork:
+    - vlan2010
+    vmCategories: 
+    - AppType=Kubernetes
+    cloudInit: |-
+      #cloud-config 
+      package_update: true
+      package_upgrade: true
+      packages:
+        - open-iscsi
+        - nfs-common
+      runcmd:
+        - systemctl stop ufw && systemctl disable ufw
+
+
+# Specify nodepool options. Can add multiple node groups, specify etcd, controlplane and worker roles.
+nodepools:
+
+## control plane nodepool configs
+- etcd: false
+  controlplane: true
+  worker: false
+  quantity: 1
+  name: control
+
+## etcd nodepool configs
+- etcd: true
+  controlplane: false
+  worker: false
+  quantity: 1
+  name: etcd
+
+## worker nodepool configs
+- etcd: false
+  controlplane: false
+  worker: true
+  quantity: 1
+  name: worker
+
+## example additional worker nodepool with overridden configs
+# - etcd: false
+#   controlplane: false
+#   worker: true
+#   quantity: 1
+#   name: stacked
+#   labels: {}
+#   taints: {}
+#   paused: false
+#   displayName: "Rancher Cluster on Nutanix"
+#   cluster: PHX-SPOC020-1
+#   project: BootcampInfra
+#   storageContainer: null
+#   diskSize: "0"
+#   vmCategories: 
+#   - AppType=Kubernetes
+#   vmCores: "2"
+#   vmCpuPassthrough: false
+#   vmCpus: "2"
+#   vmImage: ubuntu-22.04-server-cloudimg-amd64.img
+#   vmImageSize: "250"
+#   vmMem: "8192"
+#   vmNetwork:
+#   - vlan2010
+#   vmSerialPort: false
+#   cloudInit: |-
+#     #cloud-config 
+#     package_update: true
+#     package_upgrade: true
+#     packages:
+#       - open-iscsi
+#       - nfs-common
+#     runcmd:
+#       - systemctl stop ufw && systemctl disable ufw
+#     users:
+#       - default
+#       - name: nutanix
+#       groups: sudo
+#       shell: /bin/bash
+#       sudo: ['ALL=(ALL) NOPASSWD:ALL']
+#       ssh-authorized-keys:
+#        - <ssh-public-key>
