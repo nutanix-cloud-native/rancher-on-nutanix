@@ -1,6 +1,6 @@
-# Rancher on Nutanix Demo Repo
+# Rancher by SUSE on Nutanix Cluster Template Examples
 
-- [Rancher on Nutanix Demo Repo](#rancher-on-nutanix-demo-repo)
+- [Rancher by SUSE on Nutanix Cluster Template Examples](#rancher-by-suse-on-nutanix-cluster-template-examples)
   - [Overview](#overview)
   - [PreRequisites](#prerequisites)
   - [Staging Local Workstation and Rancher MCM Environment](#staging-local-workstation-and-rancher-mcm-environment)
