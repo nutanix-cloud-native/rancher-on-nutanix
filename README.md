@@ -26,13 +26,13 @@
 
 ## Overview
 
-The following repo is used to supplement the Rancher on Nutanix Best Practices Guide.
+The following repo is used to supplement the examples used throughout the [Rancher by SUSE on Nutanix Best Practices Guide](https://portal.nutanix.com/page/documents/solutions/details?targetId=BP-2103-Rancher-SUSE-Nutanix:references.html).
 
 This repo includes an example cluster template that could be used to deploy either RKE2 or K3S clusters with multiple nodepools across one or many Nutanix AHV Clusters.
 
 ## PreRequisites
 
-- Existing Rancher MCM Cluster
+- Existing Rancher Multi-Cluster Management Cluster
 - Nutanix AHV Node Driver Enabled and Activated within Rancher.
 - Existing Nutanix AHV Cluster with IPAM Subnet Enabled.
 - Existing Nutanix Prism Project with AHV Cluster and Subnet defined within Prism Central.
