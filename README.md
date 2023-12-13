@@ -26,7 +26,7 @@
 
 ## Overview
 
-The following repo is used to supplement the Rancher on Nutanix Tech Note.
+The following repo is used to supplement the Rancher on Nutanix Best Practices Guide.
 
 This repo includes an example cluster template that could be used to deploy either RKE2 or K3S clusters with multiple nodepools across one or many Nutanix AHV Clusters.
 
@@ -51,13 +51,13 @@ The following deployment examples assume that each command is run from the respe
 Prior to proceeding with the next steps, make sure to clone the git repository locally and change directory to newly created repo location.  Upon completion, navigate to Rancher MCM cluster via kubectl and Create the Cloud Credentials needed for provisioning clusters within Nutanix Prism Central.
 
 ```bash
-git clone https://github.com/jesse-gonzalez/rancher-on-nutanix
+git clone https://github.com/nutanix-cloud-native/rancher-on-nutanix
 cd rancher-on-nutanix
 ```
 
 ### Create Rancher Cloud Credentials Secret for Nutanix Prism Central
 
-Creating this secret is equivalent to providing cloud credentials in Rancher Cluster Management > Cloud Credentials section of UI.  However, when configuring from the UI, the Kubernetes secret defined within the cattle-global-data namespace generates a unique identifier for each secret, making it challenging to work within multiple environments.  By creating the secret via kubectl with a static name, you can reduce the overhead of having to find and override the cloudCredentialSecretName needed during the helm deployment. 
+Creating this secret is equivalent to providing cloud credentials in Rancher Cluster Management > Cloud Credentials section of UI.  However, when configuring from the UI, the Kubernetes secret defined within the cattle-global-data namespace generates a unique identifier for each secret, making it challenging to work within multiple environments.  By creating the secret via kubectl with a static name, you can reduce the overhead of having to find and override the cloudCredentialSecretName needed during the helm deployment.
 
 If creating the secret via the Rancher UI (Cluster Management > Cloud Credentials > Create Nutanix > Enter Prism Central Creds) is preferred, make sure to override the default value when setting helm values for cloudCredentialSecretName prior to deployment.
 
